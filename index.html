@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор прочности вала редуктора</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Калькулятор прочности вала редуктора</h1>
+        <label for="diameter">Диаметр вала (мм):</label>
+        <input type="number" id="diameter" placeholder="Введите диаметр вала">
+        
+        <label for="torque">Крутящий момент (Нм):</label>
+        <input type="number" id="torque" placeholder="Введите крутящий момент">
+
+        <label for="length">Длина вала (мм):</label>
+        <input type="number" id="length" placeholder="Введите длину вала">
+
+        <label for="materialStrength">Прочность материала (МПа):</label>
+        <input type="number" id="materialStrength" placeholder="Введите прочность материала">
+
+        <button onclick="calculateStrength()">Рассчитать</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function calculateStrength() {
+            // Получаем значения из полей ввода
+            var diameter = document.getElementById('diameter').value;
+            var torque = document.getElementById('torque').value;
+            var length = document.getElementById('length').value;
+            var materialStrength = document.getElementById('materialStrength').value;
+
+            // Проверка, что все значения введены
+            if (!diameter || !torque || !length || !materialStrength) {
+                document.getElementById('result').innerText = "Пожалуйста, заполните все поля.";
+                return;
+            }
+
+            // Преобразуем значения к числам
+            diameter = parseFloat(diameter);
+            torque = parseFloat(torque);
+            length = parseFloat(length);
+            materialStrength = parseFloat(materialStrength);
+
+            // Рассчитываем прочность вала
+            var radius = diameter / 2;
+            var polarMomentOfInertia = (Math.PI * Math.pow(radius, 4)) / 2;
+            var maxShearStress = torque * radius / polarMomentOfInertia;
+
+            var resultText = '';
+
+            if (maxShearStress < materialStrength) {
+                resultText = "Вал выдерживает заданный крутящий момент.";
+            } else {
+                resultText = "Вал не выдерживает заданный крутящий момент.";
+            }
+
+            resultText += " Максимальное касательное напряжение: " + maxShearStress.toFixed(2) + " МПа.";
+
+            // Выводим результат
+            document.getElementById('result').innerText = resultText;
+        }
+    </script>
+</body>
+</html>
